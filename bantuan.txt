@@ -1,0 +1,15 @@
+<div className="why-section">
+                    <div className="why-header">
+                        <h1 className='why-title'>Why choose <div className='sub-icon'></div> ?</h1>
+                        <p className="why-p">Built for Growth, Secured for Trust.</p>
+                    </div>
+                    <div className="feature-section-container">
+                        {whyChooseiDElPay.map((item, index) => (
+                            <div className="feature-card" key={index}>
+                                <span className="simbols">{item.svg}</span>
+                                <h2 className="sub-title">{item.title}</h2>
+                                <p className="deskription">{item.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>

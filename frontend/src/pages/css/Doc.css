@@ -1,0 +1,124 @@
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #09090b;
+}
+
+/* Pastikan ini di Doc.css */
+.documentation-container {
+    display: flex;
+    gap: 32px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    align-items: flex-start;
+    overflow: visible; /* Penting: jangan gunakan auto di sini */
+}
+
+/* Sidebar Nav */
+.side-navigation {
+    position: sticky; /* Biar sidebar ikut scroll tapi tetap terlihat */
+    top: 100px; /* Beri ruang untuk navbar */
+    flex: 0 0 280px;
+    height: calc(100vh - 150px);
+    overflow-y: auto; 
+    top: 32px;
+    flex: 0 0 280px;
+
+    background: #18181b;
+    /* Warna lebih gelap untuk depth */
+    border: 1px solid #27272a;
+    border-radius: 20px;
+    padding: 24px 16px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #3f3f46 transparent;
+}
+
+/* Custom Scrollbar */
+.side-navigation::-webkit-scrollbar {
+    width: 4px;
+}
+
+.side-navigation::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 4px;
+}
+
+/* Nav Brand */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px 24px 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #27272a;
+}
+
+.nav-logo {
+    font-size: 24px;
+}
+
+.nav-title {
+    color: #fafafa;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+}
+
+/* Nav Links */
+.nav-section {
+    margin-bottom: 32px;
+}
+
+.nav-section-title {
+    color: #52525b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0 12px;
+    margin-bottom: 12px;
+}
+
+.nav-link {
+    display: block;
+    color: #a1a1aa;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover {
+    background: #27272a;
+    color: #e4e4e7;
+}
+
+.nav-link.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Documentation Space */
+.documentation-space {
+    flex: 1;
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 20px;
+    padding: 48px;
+    color: #e4e4e7;
+    line-height: 1.6;
+}
+
+.documentation-space h2 {
+    color: #fafafa;
+    margin-bottom: 16px;
+    font-size: 28px;
+}
