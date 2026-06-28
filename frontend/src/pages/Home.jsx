@@ -249,21 +249,20 @@ export default function Home() {
 
                                 return (
                                     <div className="products-card" key={item.id}>
-                                        <h2 className="title-plans" style={{ fontSize: '1.5rem', color: '#5DF8D8', marginBottom: '8px', padding: '20px 0' }}>
-                                            {item.name}
-                                        </h2>
+                                        <div className="product-head">
+                                            <h2 className="title-plans" style={{ fontSize: '1.5rem', color: '#5DF8D8', marginBottom: '8px', padding: '20px 0' }}>
+                                                {item.name}
+                                            </h2>
 
-                                        <div className="price-section" style={{ marginBottom: '16px', display: 'grid', flexDirection: 'column' }}>
-                                            <span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#ffffff' }}>
-                                                IDR {Number(item.transaction_fee_flat).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
-                                            </span>
-                                            <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#b4b4b483' }}>
-                                                US$ {Number(item.transaction_fee_flat_usd).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
-                                            </span>
+                                            <div className="price-section" style={{ marginBottom: '16px', display: 'grid', flexDirection: 'column' }}>
+                                                <span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#ffffff' }}>
+                                                    IDR {Number(item.transaction_fee_flat).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
+                                                </span>
+                                                <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#b4b4b483' }}>
+                                                    US$ {Number(item.transaction_fee_flat_usd).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
+                                                </span>
+                                            </div>
                                         </div>
-
-                                        <hr style={{ borderColor: '#ffffff6d', marginBottom: '16px' }} />
-
                                         <ul className="plan-features" style={{ listStyle: 'none', textAlign: 'left' }}>
                                             {features.map((feature, idx) => (
                                                 <li key={idx} style={{ color: '#ffffff', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem' }}>
