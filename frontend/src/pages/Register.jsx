@@ -43,7 +43,7 @@ export default function Register() {
             const userId = authData?.user?.id;
 
             if (!userId) {
-                throw new Error('Registrasi gagal. Silakan coba lagi.');
+                throw new Error('Registration failed. Please try again.');
             }
 
             const rawSandbox = `sbx_${generateRandomHex(32)}`;
@@ -58,7 +58,7 @@ export default function Register() {
             });
 
             if (dbError) {
-                throw new Error('Gagal membuat profil bisnis. Silakan coba lagi nanti.');
+                throw new Error('Failed to create business profile. Please try again later.');
             }
 
             setShowModal(true);
@@ -66,7 +66,7 @@ export default function Register() {
             const msg =
                 typeof error?.message === 'string'
                     ? error.message
-                    : 'Terjadi kesalahan. Silakan coba lagi.';
+                    : 'An error occurred. Please try again.';
 
             setErrorMsg(msg);
         } finally {
@@ -86,6 +86,7 @@ export default function Register() {
                     {errorMsg && <div className="error-message">{errorMsg}</div>}
 
                     <form className="register-form" onSubmit={handleSubmit}>
+                        <div className="icon"></div>
                         <div className="form-group-wrapper">
                             <div className="form-group">
                                 <label className="input-label">Nama Bisnis</label>
@@ -132,7 +133,7 @@ export default function Register() {
 
                         <div>
                             <button type="submit" disabled={loading} className="submit-button">
-                                {loading ? <p>Loading...</p> : <>Register</>}
+                                {loading ? <p>Loading...</p> : <>Sign up</>}
                             </button>
                         </div>
                     </form>
