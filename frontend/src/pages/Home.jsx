@@ -163,7 +163,7 @@ export default function Home() {
             const { data, error } = await supabase
                 .from('gateway_information')
                 .select('*')
-                .order('transaction_fee_flat', { ascending: true })
+                .order('payout_fee_flat', { ascending: true })
             if (error) {
                 console.error('Error fetching data: ', error.message);
             } else {
@@ -256,10 +256,10 @@ export default function Home() {
 
                                             <div className="price-section" style={{ marginBottom: '16px', display: 'grid', flexDirection: 'column' }}>
                                                 <span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#ffffff' }}>
-                                                    IDR {Number(item.transaction_fee_flat).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
+                                                    {Number(item.transaction_fee_flat).toLocaleString('id-ID', {minimumFractionDigits: 1}) + ' %'}<span style={{ fontWeight: '500', color: '#94a3b8', fontSize: '1rem' }}> / transaction</span>
                                                 </span>
-                                                <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#b4b4b483' }}>
-                                                    US$ {Number(item.transaction_fee_flat_usd).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
+                                                <span style={{ fontSize: '1.4rem', fontWeight: '300', color: '#b4b4b483' }}>
+                                                    IDR {Number(item.payout_fee_flat).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / withdrawal</span>
                                                 </span>
                                             </div>
                                         </div>
