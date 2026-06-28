@@ -1,5 +1,6 @@
 /* --- Navbar Container --- */
 .navbar {
+    user-select: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,16 +32,26 @@
     gap: 2.5rem;
 }
 
-.nav-links a {
+.nav-links .Link-menu svg {
+    fill: #6a7b91;
+    transition: fill 0.3s ease;
+}
+.nav-links .Link-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     text-decoration: none;
-    color: #334155;
+    color: #6a7b91;
     font-weight: 500;
     font-size: 0.95rem;
     transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
+.nav-links .Link-menu:hover svg,
+.nav-links .Link-menu:hover {
     color: #007bff;
+    fill: #007bff
 }
 
 /* --- Actions & Buttons --- */
