@@ -187,7 +187,7 @@ export default function Home() {
                         ))}
                     </div>
                     <div className="option-button">
-                        <Link to="#" className="btn btn-start">Get Started <ArrowRight /></Link>
+                        <Link to="/register" className="btn btn-start">Get Started <ArrowRight /></Link>
                         <Link to="/documentation" className="btn btn-open-document"><IconBook /> API Documentation</Link>
                     </div>
                 </div>
@@ -244,34 +244,21 @@ export default function Home() {
                     ) : (
                         <div className="products-container">
                             {products.filter(item => item.is_active).map((item) => {
-                                // Pengaman jika description dari database perlu di-parse ke Array
-                                const features = Array.isArray(item.description)
-                                    ? item.description
-                                    : JSON.parse(item.description || "[]");
+                                // Karena semua data sekarang punya 'details', kita akses langsung dengan aman
+                                const features = item.description?.details || [];
 
                                 return (
                                     <div className="products-card" key={item.id}>
-
-                                        {/* Nama Paket */}
                                         <h2 className="title-plans" style={{ fontSize: '1.5rem', color: '#5DF8D8', marginBottom: '8px', padding: '20px 0' }}>
                                             {item.name}
                                         </h2>
 
-                                        {/* Tampilan Harga/Biaya Utama (Membaca dari transaction_fee_flat) */}
-                                        <div className="price-section" style={{ marginBottom: '16px' }}>
+                                        <div className="price-section" style={{ marginBottom: '16px', display: 'grid', flexDirection: 'column' }}>
                                             <span style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#ffffff' }}>
-                                                IDR {Number(item.transaction_fee_flat).toLocaleString('id-ID')}
+                                                IDR {Number(item.transaction_fee_flat).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
                                             </span>
-                                            <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
-                                                {" "}/ transaction
-                                            </span>
-                                        </div>
-                                        <div className="price-section-secondary" style={{ marginBottom: '16px', opacity: .6 }}>
-                                            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff' }}>
-                                                US$ {Number(item.transaction_fee_flat_usd).toLocaleString('id-ID')}
-                                            </span>
-                                            <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
-                                                {" "}/ transaction
+                                            <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#b4b4b483' }}>
+                                                US$ {Number(item.transaction_fee_flat_usd).toLocaleString('id-ID')}<span style={{ fontWeight: '200', color: '#94a3b8', fontSize: '0.9rem' }}> / transaction</span>
                                             </span>
                                         </div>
 
@@ -286,10 +273,7 @@ export default function Home() {
                                             ))}
                                         </ul>
 
-                                        <button className="plans-btn">
-                                            Select a plan
-                                        </button>
-
+                                        <button className="plans-btn">Select a plan</button>
                                     </div>
                                 );
                             })}
@@ -307,7 +291,7 @@ export default function Home() {
                             gateway that's secure, fast, and fully integrated for all your digital needs.
                         </p>
                         <div className="last-hook-actions">
-                            <Link to="#" className="btn-primary">Join Now</Link>
+                            <Link to="/register" className="btn-primary">Join Now</Link>
                             <Link to="/documentation" className="btn-secondary">API Documentation</Link>
                         </div>
                     </div>

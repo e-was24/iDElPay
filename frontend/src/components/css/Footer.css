@@ -152,16 +152,16 @@
     }
 }
 
-.icon-cover {
+.icon-cover-footer {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.icon {
+.icon-cover-footer .icon {
     
-    background: url(icon/icon-1-remove-bg.png);
+    background: url('./icon/web-icon.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

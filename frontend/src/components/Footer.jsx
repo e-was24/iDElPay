@@ -60,7 +60,7 @@ export default function Footer() {
                     </div>
                 </div>
             </div> */}
-            <div className="icon-cover">
+            <div className="icon-cover-footer">
                 <div className="icon"></div>
             </div>
 

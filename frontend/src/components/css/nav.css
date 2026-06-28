@@ -18,7 +18,7 @@
 .navbar .logo {
     width: 150px;
     height: 40px;
-    background: url("./icon/icon-1-remove-bg.png");
+    background: url("./icon/web-icon.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -46,7 +46,17 @@
 /* --- Actions & Buttons --- */
 .nav-actions {
     display: flex;
+    justify-content: space-evenly;
+    gap: .5rem;
     align-items: center;
+}
+
+.nav-actions .btn-glass:nth-child(1) {
+    background: gray;
+}
+
+.nav-actions .btn-glass:nth-child(1) svg {
+    scale: .8;
 }
 
 .mobile-only-btn {
