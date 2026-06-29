@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
 import './css/Form.css';
 
 export default function Register() {
@@ -14,13 +13,6 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
-    const generateRandomHex = (length) => {
-        const array = new Uint8Array(length);
-        crypto.getRandomValues(array);
-        return Array.from(array, (b) => b.toString(16).padStart(2, '0'))
-            .join('')
-            .slice(0, length);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,37 +20,23 @@ export default function Register() {
         setErrorMsg('');
 
         try {
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        business_name: businessName,
-                    },
+            const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
+            const response = await fetch(`${backendUrl}/api/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
+                body: JSON.stringify({
+                    businessName,
+                    email,
+                    password
+                })
             });
 
-            if (authError) throw authError;
+            const data = await response.json();
 
-            const userId = authData?.user?.id;
-
-            if (!userId) {
-                throw new Error('Registration failed. Please try again.');
-            }
-
-            const rawSandbox = `sbx_${generateRandomHex(32)}`;
-            const rawProduction = `prod_${generateRandomHex(32)}`;
-
-            const { error: dbError } = await supabase.rpc('insert_encrypted_merchant', {
-                p_id: String(userId),
-                p_business_name: String(businessName),
-                p_email: String(email),
-                p_raw_sandbox: String(rawSandbox),
-                p_raw_production: String(rawProduction),
-            });
-
-            if (dbError) {
-                throw new Error('Failed to create business profile. Please try again later.');
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Registration failed. Please try again.');
             }
 
             setShowModal(true);

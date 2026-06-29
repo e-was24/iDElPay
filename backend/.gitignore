@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (JANGAN dicommit ke git!)
+.env
+.env.local
+.env.production
+
+# Temp / dev scripts (hapus sebelum deploy)
+test_*.js
+fetch_*.js
+migrate_*.js
+
+# Database schema notes (opsional, tidak perlu di repo)
+db_schema_fixes.sql
+
+# Backup
+backend_backup/
+
+# Logs
+*.log
+npm-debug.log*

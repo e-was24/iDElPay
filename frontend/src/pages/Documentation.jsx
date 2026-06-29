@@ -4,11 +4,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import './css/Doc.css'
 import Navbar from '../components/Navigation'
+import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 export default function Documentation() {
-    const containerRef = useRef(null);
+    const containerRef = useRef();
 
     useEffect(() => {
         // 1. Smooth Scroll pada Link Navigasi
@@ -44,10 +45,24 @@ export default function Documentation() {
         return () => ScrollTrigger.getAll().forEach(t => t.kill());
     }, []);
 
-    return (
-        <>
-        <div className="nav">
+    useGSAP(() => {
+        gsap.from('.side-navigation', {
+            x: -100,
+            y: -50,
+            opacity: 0,
+            duration: 1
+        })
+        gsap.from('.documentation-space', {
+            x: 100,
+            y: 50,
+            opacity: 0,
+            duration: 1
+        })
+    }, {scope: containerRef})
 
+    return (
+        <div ref={containerRef}>
+        <div className="nav">
             <Navbar />
         </div>
             <div className="documentation-container">
@@ -116,6 +131,6 @@ export default function Documentation() {
                     ))}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
