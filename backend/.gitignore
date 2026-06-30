@@ -6,10 +6,15 @@ node_modules/
 .env.local
 .env.production
 
+
 # Temp / dev scripts (hapus sebelum deploy)
 test_*.js
 fetch_*.js
 migrate_*.js
+force_migrate.js
+get_profile.js
+get_profile_by_key.js
+
 
 # Database schema notes (opsional, tidak perlu di repo)
 db_schema_fixes.sql

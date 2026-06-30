@@ -8,76 +8,99 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(
-    cors({
-        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    })
-);
+app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
 
 // ---------- Helpers ----------
 function generateKey(prefix) {
     return `${prefix}_${crypto.randomBytes(32).toString('hex')}`;
 }
 
+// ---------- Middleware ----------
+const authMiddleware = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+    if (!token) return res.status(401).json({ success: false, message: 'Token tidak ditemukan.' });
+
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+    if (error || !user) return res.status(401).json({ success: false, message: 'Token tidak valid.' });
+
+    req.user = user;
+    next();
+};
+
 // ---------- Routes ----------
+
+// 1. Register (Public)
 app.post('/api/register', async (req, res) => {
     const { businessName, email, password } = req.body;
-
     if (!businessName || !email || !password) {
-        return res.status(400).json({
-            success: false,
-            message: 'businessName, email, dan password wajib diisi.',
-        });
+        return res.status(400).json({ success: false, message: 'Data tidak lengkap.' });
     }
 
     try {
-        const { data: authData, error: authError } =
-            await supabaseAdmin.auth.admin.createUser({
-                email,
-                password,
-                email_confirm: false,
-                user_metadata: { business_name: businessName },
-            });
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+            email, password, email_confirm: true, user_metadata: { business_name: businessName }
+        });
 
-        if (authError) {
-            return res.status(400).json({ success: false, message: authError.message });
-        }
-
-        const userId = authData.user.id;
+        if (authError) return res.status(400).json({ success: false, message: authError.message });
 
         const rawSandbox = generateKey('sbx');
         const rawProduction = generateKey('prod');
 
-        const encryptionKey = process.env.ENCRYPTION_KEY;
         const { error: dbError } = await supabaseAdmin.rpc('insert_encrypted_merchant', {
-            p_id: userId,
+            p_id: authData.user.id,
             p_business_name: businessName,
             p_email: email,
             p_raw_sandbox: rawSandbox,
             p_raw_production: rawProduction,
-            p_key: encryptionKey,
+            p_key: process.env.ENCRYPTION_KEY
         });
 
         if (dbError) {
-            console.error('[register] DB insert error:', dbError.message);
-            await supabaseAdmin.auth.admin.deleteUser(userId);
-            return res.status(400).json({
-                success: false,
-                message: 'Gagal membuat business profile. Silakan coba lagi.',
-            });
+            await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+            return res.status(500).json({ success: false, message: 'Gagal membuat profil bisnis.' });
         }
 
-        return res.json({
+        return res.json({ success: true, sandboxKey: rawSandbox, productionKey: rawProduction });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+    }
+});
+
+// 2. Get Profile (Protected)
+app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // 1. Ambil profil dasar (business_name, balance, dll)
+        const { data: profile, error: profileError } = await supabaseAdmin
+            .from('merchants')
+            .select('business_name, balance, email, phone_number, bank_name, bank_account_number')
+            .eq('id', userId)
+            .single();
+
+        // 2. Ambil API Key yang sudah didekripsi (via RPC)
+        const { data: keys, error: keysError } = await supabaseAdmin.rpc('get_decrypted_keys', {
+            p_id: userId,
+            p_key: process.env.ENCRYPTION_KEY
+        });
+
+        if (profileError || keysError || !keys || keys.length === 0) {
+            return res.status(404).json({ success: false, message: 'Data merchant tidak lengkap.' });
+        }
+
+        // 3. Gabungkan keduanya sebelum dikirim ke frontend
+        res.json({
             success: true,
-            sandboxKey: rawSandbox,
-            productionKey: rawProduction,
+            data: {
+                ...profile, // Mengirim business_name, balance, dll
+                api_key_sandbox: keys[0].api_key_sandbox, // Mengirim hasil dekripsi
+                api_key_production: keys[0].api_key_production
+            }
         });
     } catch (err) {
-        console.error('[register] Unexpected error:', err.message);
-        return res.status(500).json({
-            success: false,
-            message: 'Terjadi kesalahan pada server.',
-        });
+        res.status(500).json({ success: false, message: 'Server error saat menggabungkan data.' });
     }
 });
 
