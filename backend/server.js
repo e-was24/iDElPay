@@ -10,17 +10,17 @@ const allowedOrigins = [
     'https://pg-idelpay.vercel.app',
     'http://localhost:5173',
     process.env.FRONTEND_URL
-]
+];
 
 const app = express();
 app.use(express.json());
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true)
+            callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'))
-        } 
+            callback(new Error('Not allowed by CORS'));
+        }
     },
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -45,6 +45,11 @@ const authMiddleware = async (req, res, next) => {
     req.user = user;
     next();
 };
+
+// ---------- Health check (buat debug cepat) ----------
+app.get('/api/health', (req, res) => {
+    res.json({ success: true, message: 'Backend is alive', env: process.env.NODE_ENV || 'unset' });
+});
 
 // ---------- Routes ----------
 
@@ -81,6 +86,7 @@ app.post('/api/register', async (req, res) => {
 
         return res.json({ success: true, sandboxKey: rawSandbox, productionKey: rawProduction });
     } catch (err) {
+        console.error('[register] error:', err);
         return res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
     }
 });
@@ -90,14 +96,12 @@ app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // 1. Ambil profil dasar (business_name, balance, dll)
         const { data: profile, error: profileError } = await supabaseAdmin
             .from('merchants')
             .select('business_name, balance, email, phone_number, bank_name, bank_account_number')
             .eq('id', userId)
             .single();
 
-        // 2. Ambil API Key yang sudah didekripsi (via RPC)
         const { data: keys, error: keysError } = await supabaseAdmin.rpc('get_decrypted_keys', {
             p_id: userId,
             p_key: process.env.ENCRYPTION_KEY
@@ -107,18 +111,25 @@ app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
             return res.status(404).json({ success: false, message: 'Data merchant tidak lengkap.' });
         }
 
-        // 3. Gabungkan keduanya sebelum dikirim ke frontend
         res.json({
             success: true,
             data: {
-                ...profile, // Mengirim business_name, balance, dll
-                api_key_sandbox: keys[0].api_key_sandbox, // Mengirim hasil dekripsi
+                ...profile,
+                api_key_sandbox: keys[0].api_key_sandbox,
                 api_key_production: keys[0].api_key_production
             }
         });
     } catch (err) {
+        console.error('[merchant/profile] error:', err);
         res.status(500).json({ success: false, message: 'Server error saat menggabungkan data.' });
     }
 });
 
-export default app; 
+// ---------- Local dev only ----------
+// Vercel tidak butuh app.listen(), tapi local dev butuh ini supaya server tetap nyala.
+if (!process.env.VERCEL) {
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => console.log(`[server] Backend running on port ${PORT}`));
+}
+
+export default app;
