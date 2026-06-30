@@ -121,4 +121,4 @@ app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
     }
 });
 
-export default app;
+export default app; 
