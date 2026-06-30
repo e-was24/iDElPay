@@ -14,31 +14,27 @@ export default function Dashboard() {
   useEffect(() => {
     fetchMerchantProfile();
   }, []);
-
   const fetchMerchantProfile = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      const BACKEND_URL = 'http://localhost:4000';
 
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const response = await fetch(`${BACKEND_URL}/api/merchant/profile`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,// Mengirim token
+          'Content-Type': 'application/json' 
+        }
+      });
 
-      if (sessionError) throw sessionError;
-
-      if (!session) {
-        navigate('/login');
-        return;
+      const result = await response.json();
+      console.log("Data yg dikirim backend: ", result.data)
+      if (result.success) {
+        setMerchantData(result.data);
       }
-
-      const { data, error: dbError } = await supabase
-        .from('merchant_profiles_secure')
-        .select('*')
-        .single();
-
-      if (dbError) throw dbError;
-
-      setMerchantData(data);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error.message);
       setErrorMsg('Gagal memuat data dashboard.');
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -122,7 +118,7 @@ export default function Dashboard() {
             <input
               type="text"
               readOnly
-              value={merchantData?.api_key_sandbox || ''}
+              value={merchantData?.api_key_sandbox || 'ERROR 500'}
               className="credential-input"
             />
           </div>
@@ -133,7 +129,7 @@ export default function Dashboard() {
               <input
                 type={showProdKey ? 'text' : 'password'}
                 readOnly
-                value={merchantData?.api_key_production || ''}
+                value={merchantData?.api_key_production || 'ERROR 500'}
                 className="credential-input"
               />
               <button
