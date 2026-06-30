@@ -20,7 +20,7 @@ export default function Register() {
         setErrorMsg('');
 
         try {
-            const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
+            const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
             const response = await fetch(`${backendUrl}/api/register`, {
                 method: 'POST',
                 headers: {
