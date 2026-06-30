@@ -28,7 +28,7 @@ export default function Dashboard() {
       });
 
       const result = await response.json();
-      console.log("Data yg dikirim backend: ", result.data)
+      
       if (result.success) {
         setMerchantData(result.data);
       }
