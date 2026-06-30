@@ -20,7 +20,7 @@ get_profile_by_key.js
 db_schema_fixes.sql
 
 # Backup
-backend_backup
+backend_backup/
 
 # Logs
 *.log
