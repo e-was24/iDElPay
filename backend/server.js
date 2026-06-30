@@ -6,9 +6,25 @@ import { supabaseAdmin } from './lib/supabaseAdmin.js';
 
 dotenv.config();
 
+const allowedOrigins = [
+    'https://pg-idelpay.vercel.app',
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+]
+
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        } 
+    },
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    credentials: true
+}));
 
 // ---------- Helpers ----------
 function generateKey(prefix) {
@@ -106,3 +122,4 @@ app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`[server] Backend running on port ${PORT}`));
+export default app;
