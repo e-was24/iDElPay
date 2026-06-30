@@ -23,7 +23,7 @@ export default function Dashboard() {
       const response = await fetch(`${BACKEND_URL}/api/merchant/profile`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,// Mengirim token
-          'Content-Type': 'application/json' 
+          'Content-Type': 'application/json'
         }
       });
 

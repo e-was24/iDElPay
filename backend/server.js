@@ -98,7 +98,7 @@ app.get('/api/merchant/profile', authMiddleware, async (req, res) => {
 
         const { data: profile, error: profileError } = await supabaseAdmin
             .from('merchants')
-            .select('business_name, balance, email, phone_number, bank_name, bank_account_number')
+            .select('business_name, balance, email, phone_number, bank_name, bank_account_number, is_active')
             .eq('id', userId)
             .single();
 
