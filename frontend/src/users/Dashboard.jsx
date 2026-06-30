@@ -18,7 +18,7 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const BACKEND_URL = 'http://localhost:4000';
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
       const response = await fetch(`${BACKEND_URL}/api/merchant/profile`, {
         headers: {
